@@ -95,7 +95,7 @@ export class UsersService {
 
         return {
           status: 200,
-          message: 'User login successfully!',
+          message: 'User logged in successfully !',
           data: {
             user: {
               ...formattedUser
@@ -106,7 +106,7 @@ export class UsersService {
       } else {
         return {
           status: 401,
-          message: 'Unauthorized!',
+          message: 'Unauthorized !',
         }
       }
     }
@@ -119,11 +119,38 @@ export class UsersService {
 
     return {
       status: 200,
-      message: 'User retrieved successfully!',
+      message: 'User retrieved successfully !',
       data: {
         id: userId,
         ...formattedUser
       }
     };
   }
+
+  async updateUser(userId: string, updateData: Partial<User>): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+  
+    await userRef.update({
+      ...updateData,
+      updatedAt: firestoreTimestamp.now(),
+    });
+  
+    return {
+      status: 200,
+      message: 'User updated successfully !',
+      data: {
+        id: userId, 
+        ...updateData,
+      },
+    };
+  }
+
 }

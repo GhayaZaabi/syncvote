@@ -106,4 +106,51 @@ export class UserController {
       }
     }
   }
+
+  async updateUser(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+    
+    if (request.body.role !== 'admin') {
+      response.status(400).json({
+        status: 403,
+        message: 'Forbidden ! You have to be admin to perform',
+        data: errors.array(),
+      });
+      return; }
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request. Validation errors.',
+        data: errors.array(),
+      });
+      return;
+    }
+  
+    try {
+      const userId = request.params.id;
+      const updateData = request.body;
+  
+      const userDoc = await this.usersService.getUserById(userId);
+      if (userDoc.status !== 200) {
+        response.status(404).json({
+          status: 404,
+          message: 'User not found',
+        });
+        return;
+      }
+  
+      const updateResponse = await this.usersService.updateUser(userId, updateData);
+  
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        userId // Inclure userId dans la réponse
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error, 
+      });
+    }
+  }
 }

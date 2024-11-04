@@ -1,7 +1,8 @@
 import { Router } from 'express';
 import { UserController } from '../controllers';
-import { validateCreateUser, validateLoginUser } from '../middlewares/dataValidator';
+import { validateCreateUser, validateLoginUser, validateUpdateUser } from '../middlewares/dataValidator';
 import authJwt from '../middlewares/authJwt';
+import authorize from '../middlewares/authorize';
 
 export class UsersRoute {
   private userController: UserController;
@@ -19,6 +20,9 @@ export class UsersRoute {
     router.get('/users/:id', authJwt.verifyToken, this.userController.getUserById.bind(this.userController));
 
     router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController));
+
+    router.put('/users/:id' , validateUpdateUser ,authorize('admin') , this.userController.updateUser.bind(this.userController) );
+
 
     return router;
   }

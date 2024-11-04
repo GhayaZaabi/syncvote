@@ -30,3 +30,9 @@ export const validateCreatePost = [
     )
     .withMessage('All categories must be strings'),
 ];
+
+export const validateUpdateUser = [
+  body('email').optional().isEmail().withMessage('email id required'),
+  body('username').optional().notEmpty().withMessage('Username is required'),
+  body('role').optional().isIn(['admin', 'member']).withMessage('Role must be either admin or member'),
+];
