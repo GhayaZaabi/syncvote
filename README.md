@@ -26,3 +26,8 @@ login après la modification du mot de passe :
 ![alt text](<login after password change.png>)
 La fonction ne s'execute pas si on saisit pas l'ancien ou le nouveau mot de passe :
 ![alt text](<password required.png>)
+
+# update post :
+Seulement le propriétaire du post ou l'admin peuvent modifier le post 
+![alt text](<updatePost forbidden.png>) 
+![alt text](updatePost.png)

@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { PostsController } from '../controllers';
 import { validateCreatePost } from '../middlewares/dataValidator';
 import authJwt from '../middlewares/authJwt';
+import authorize from '../middlewares/authorize';
 
 export class PostsRoute {
   private postsController: PostsController;
@@ -20,6 +21,9 @@ export class PostsRoute {
     router.get('/categories', this.postsController.getCategories.bind(this.postsController));
 
     router.get('/posts/:id', this.postsController.getPostById.bind(this.postsController));
+
+    router.put('/posts/:id', authJwt.verifyToken, this.postsController.updatePost.bind(this.postsController));
+
 
 
 

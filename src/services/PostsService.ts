@@ -90,4 +90,39 @@ export class PostsService {
       
     };
   }
+
+  async updatePost(postId: string, updateData: Partial<Post>, userId: string, userRole: string): Promise<IResBody> {
+    const postRef = this.db.posts.doc(postId);
+    const postDoc = await postRef.get();
+
+    if (!postDoc.exists) {
+      return {
+        status: 404,
+        message: 'Post not found',
+      };
+    }
+
+    const postData = postDoc.data();
+
+    if (postData?.createdBy !== userId && userRole !== 'admin') {
+      return {
+        status: 403,
+        message: 'Forbidden! You do not have permission to update this post.',
+      };
+    }
+
+    await postRef.update({
+      ...updateData,
+      updatedAt: firestoreTimestamp.now(),
+    });
+
+    return {
+      status: 200,
+      message: 'Post updated successfully!',
+      data: {
+        id: postId,
+        ...updateData,
+      },
+    };
+  }
 }

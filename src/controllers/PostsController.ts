@@ -134,4 +134,44 @@ export class PostsController {
       })
     }
   }
+
+  async updatePost(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request. Validation errors.',
+        data: errors.array(),
+      });
+      return;
+    }
+
+    try {
+      const postId = request.params.id;
+      const updateData = request.body;
+      const userId = request.userId as string; 
+      const userRole = request.userRole as string; 
+
+      if (!userId || !userRole) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID and role are required.',
+        });
+        return;
+      }
+
+      const postResponse = await this.postsService.updatePost(postId, updateData, userId, userRole);
+
+      response.status(postResponse.status).send({
+        ...postResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
 }
