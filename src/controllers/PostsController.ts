@@ -174,4 +174,32 @@ export class PostsController {
       });
     }
   }
+
+  async deletePost(request: Request, response: Response): Promise<void> {
+    try {
+      const postId = request.params.id;
+      const userId = request.userId as string; 
+      const userRole = request.userRole as string; 
+
+      if (!userId || !userRole) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID and role are required.',
+        });
+        return;
+      }
+
+      const postResponse = await this.postsService.deletePost(postId, userId, userRole);
+
+      response.status(postResponse.status).send({
+        ...postResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
 }

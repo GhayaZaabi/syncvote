@@ -24,6 +24,7 @@ export class PostsRoute {
 
     router.put('/posts/:id', authJwt.verifyToken, this.postsController.updatePost.bind(this.postsController));
 
+    router.delete('/posts/:id', authJwt.verifyToken, this.postsController.deletePost.bind(this.postsController));
 
 
 

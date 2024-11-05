@@ -31,3 +31,8 @@ La fonction ne s'execute pas si on saisit pas l'ancien ou le nouveau mot de pass
 Seulement le propriétaire du post ou l'admin peuvent modifier le post 
 ![alt text](<updatePost forbidden.png>) 
 ![alt text](updatePost.png)
+
+# delete post
+Seulement le propriétaire du post ou l'admin peuvent supprimer le post 
+![alt text](<deletePost forbidden.png>)
+![alt text](deletePost.png) 
