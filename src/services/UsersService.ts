@@ -2,7 +2,7 @@ import { User } from '../types/entities/User';
 import { FirestoreCollections } from '../types/firestore';
 import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
-import {comparePasswords, encryptPassword} from '../utils/password';
+import { comparePasswords, encryptPassword } from '../utils/password';
 import { formatUserData } from '../utils/formatData';
 import { generateToken } from '../utils/jwt';
 import { RedisClientType } from 'redis';
@@ -48,8 +48,9 @@ export class UsersService {
 
     const cachedUsers = await this.redisClient.get(cacheKey);
 
-    if(cachedUsers) {
+    if (cachedUsers) {
       users = JSON.parse(cachedUsers);
+      console.log('Users retrieved from cache:', users);
     } else {
       const usersQuerySnapshot = await this.db.users.get();
 
@@ -65,6 +66,8 @@ export class UsersService {
       await this.redisClient.set(cacheKey, JSON.stringify(users), {
         EX: 3600
       });
+
+      console.log('Users retrieved from database:', users);
     }
 
     return {
@@ -74,7 +77,7 @@ export class UsersService {
     };
   }
 
-  async login (userData: {email: string; password: string}): Promise<IResBody> {
+  async login(userData: { email: string; password: string }): Promise<IResBody> {
     const { email, password } = userData;
 
     const usersQuerySnapshot = await this.db.users.where('email', '==', email).get();
@@ -137,20 +140,47 @@ export class UsersService {
         message: 'User not found',
       };
     }
-  
+
     await userRef.update({
       ...updateData,
       updatedAt: firestoreTimestamp.now(),
     });
-  
+
     return {
       status: 200,
       message: 'User updated successfully !',
       data: {
-        id: userId, 
+        id: userId,
         ...updateData,
       },
     };
   }
 
+  async updateConnectedUser(userId: string, updateData: Partial<User>): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+    console.log(userRef)
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      console.log('User not found for ID:', userId);
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+
+    await userRef.update({
+      ...updateData,
+      updatedAt: firestoreTimestamp.now(),
+    });
+
+    return {
+      status: 200,
+      message: 'User updated successfully!',
+      data: {
+        id: userId,
+        ...updateData,
+      },
+    };
+  }
 }

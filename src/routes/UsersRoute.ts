@@ -21,7 +21,10 @@ export class UsersRoute {
 
     router.post('/auth/login', validateLoginUser, this.userController.login.bind(this.userController));
 
-    router.put('/users/:id' , validateUpdateUser ,authorize('admin') , this.userController.updateUser.bind(this.userController) );
+    router.put('/users/:id', validateUpdateUser, authorize('admin'), this.userController.updateUser.bind(this.userController));
+
+    // router.put('/users/me',authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController)); // cette route ne fonctionne pas
+    router.put('/connecteduser', authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));
 
 
     return router;

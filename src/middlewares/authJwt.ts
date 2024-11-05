@@ -30,6 +30,9 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
     req.userId = decode.id;
     req.userRole = decode.role;
 
+    console.log('User ID from token:', req.userId);
+    console.log('User Role from token:', req.userRole);
+
     next();
   } catch (e) {
     return res.status(401).json({
@@ -39,8 +42,19 @@ const verifyToken = (req: Request, res: Response, next: NextFunction) => {
   }
 };
 
+const isAdmin = (req: Request, res: Response, next: NextFunction) => {
+  if (req.userRole !== 'admin') {
+    return res.status(403).json({
+      status: 403,
+      message: 'Forbidden',
+    });
+  }
+  next();
+};
+
 const authJwt = {
   verifyToken,
+  isAdmin
 };
 
 export default authJwt;
