@@ -1,3 +1,4 @@
+import { Post } from '../types/entities/Post';
 import { User } from '../types/entities/User';
 
 export const formatUserData = (userData?: User): Partial<User> => {

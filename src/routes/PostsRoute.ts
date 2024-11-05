@@ -19,6 +19,9 @@ export class PostsRoute {
 
     router.get('/categories', this.postsController.getCategories.bind(this.postsController));
 
+    router.get('/posts/:id', this.postsController.getPostById.bind(this.postsController));
+
+
 
     return router;
   }

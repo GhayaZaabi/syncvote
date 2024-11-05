@@ -4,6 +4,7 @@ import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { Timestamp } from 'firebase/firestore';
 import { categories } from '../constants/categories';
+import { formatUserData } from '../utils/formatData';
 
 export class PostsService {
   private db: FirestoreCollections;
@@ -61,6 +62,32 @@ export class PostsService {
       status: 200,
       message: 'Comment added successfully!',
       data: categories
+    };
+  }
+
+  async getPostById(postId: string): Promise<IResBody> {
+    const postDoc = await this.db.posts.doc(postId).get();
+
+    if (!postDoc.exists) {
+      return {
+        status: 404,
+        message: 'Post not found',
+      };
+    }
+
+    const postData = {
+      id: postDoc.id,
+      ...postDoc.data(),
+      createdAt: (postDoc.data()?.createdAt as Timestamp)?.toDate(),
+      updatedAt: (postDoc.data()?.updatedAt as Timestamp)?.toDate(),
+  };
+
+    return {
+      status: 200,
+      message: 'Post retrieved successfully !',
+      data: 
+        postData
+      
     };
   }
 }
