@@ -202,4 +202,30 @@ export class PostsController {
       });
     }
   }
+
+  async getAllPostsByUser(request: Request, response: Response): Promise<void> {
+    try {
+      const userId = request.params.userId;
+
+      if (!userId) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID is required.',
+        });
+        return;
+      }
+
+      const postsResponse = await this.postsService.getAllPostsByUser(userId);
+
+      response.status(postsResponse.status).send({
+        ...postsResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
 }

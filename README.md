@@ -36,3 +36,7 @@ Seulement le propriétaire du post ou l'admin peuvent modifier le post
 Seulement le propriétaire du post ou l'admin peuvent supprimer le post 
 ![alt text](<deletePost forbidden.png>)
 ![alt text](deletePost.png) 
+
+# get all posts by user
+Récupérer tous les posts crées par un utilisateur précis
+![alt text](getAllPostsByUser.png)

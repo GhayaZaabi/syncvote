@@ -4,7 +4,7 @@ import { IResBody } from '../types/api';
 import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { Timestamp } from 'firebase/firestore';
 import { categories } from '../constants/categories';
-import { formatUserData } from '../utils/formatData';
+import { formatPostData, formatUserData } from '../utils/formatData';
 
 export class PostsService {
   private db: FirestoreCollections;
@@ -154,4 +154,33 @@ export class PostsService {
       };
     }
   }
+
+  async getAllPostsByUser(userId: string): Promise<IResBody> {
+    const postsQuerySnapshot = await this.db.posts.where('createdBy', '==', userId).get();
+
+    if (postsQuerySnapshot.empty) {
+      return {
+        status: 404,
+        message: 'No posts found for this user',
+      };
+    }
+
+    const posts: Post[] = [];
+
+    for (const doc of postsQuerySnapshot.docs) {
+      const formattedPost = formatPostData(doc.data());
+
+      posts.push({
+        id: doc.id,
+        ...formattedPost,
+      });
+    }
+
+    return {
+      status: 200,
+      message: 'Posts retrieved successfully!',
+      data: posts,
+    };
+  }
+  
 }

@@ -14,3 +14,14 @@ export const formatUserData = (userData?: User): Partial<User> => {
 
   return {};
 };
+
+export const formatPostData = (postData: any): Post => {
+  return {
+    title: postData.title,
+    description: postData.description,
+    categories: postData.categories,
+    createdBy: postData.createdBy,
+    createdAt: postData.createdAt,
+    updatedAt: postData.updatedAt,
+  };
+};
