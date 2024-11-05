@@ -226,4 +226,42 @@ export class UserController {
     }
   }
 
+  async changePassword(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request. Validation errors.',
+        data: errors.array(),
+      });
+      return;
+    }
+
+    try {
+      const { oldPassword, newPassword } = request.body;
+      const userId = request.userId as string; // Assertion de type
+
+      if (!userId) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID is required.',
+        });
+        return;
+      }
+
+      const userResponse = await this.usersService.changePassword(userId, oldPassword, newPassword);
+
+      response.status(userResponse.status).send({
+        ...userResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
 }

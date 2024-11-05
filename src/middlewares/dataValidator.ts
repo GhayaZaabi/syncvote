@@ -36,3 +36,8 @@ export const validateUpdateUser = [
   body('username').optional().notEmpty().withMessage('Username is required'),
   body('role').optional().isIn(['admin', 'member']).withMessage('Role must be either admin or member'),
 ];
+
+export const validateChangePassword = [
+  body('oldPassword').notEmpty().withMessage('Old password is required'),
+  body('newPassword').notEmpty().withMessage('New password is required'),
+];

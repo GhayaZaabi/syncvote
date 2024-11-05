@@ -211,4 +211,35 @@ export class UsersService {
     };
   }
 
+  async changePassword(userId: string, oldPassword: string, newPassword: string): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+
+    const userData = userDoc.data();
+
+    if (!comparePasswords(oldPassword, userData?.password as string)) {
+      return {
+        status: 401,
+        message: 'Incorrect old password',
+      };
+    }
+
+    await userRef.update({
+      password: encryptPassword(newPassword),
+      updatedAt: firestoreTimestamp.now(),
+    });
+
+    return {
+      status: 200,
+      message: 'Password changed successfully!',
+    };
+  }
+
 }

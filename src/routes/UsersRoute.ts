@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { UserController } from '../controllers';
-import { validateCreateUser, validateLoginUser, validateUpdateUser } from '../middlewares/dataValidator';
+import { validateChangePassword, validateCreateUser, validateLoginUser, validateUpdateUser } from '../middlewares/dataValidator';
 import authJwt from '../middlewares/authJwt';
 import authorize from '../middlewares/authorize';
 
@@ -27,6 +27,9 @@ export class UsersRoute {
     router.put('/connecteduser', authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));
 
     router.delete('/users/:id' ,authJwt.verifyToken, authorize('admin'), this.userController.deleteUser.bind(this.userController) );
+
+    router.patch('/users/password', authJwt.verifyToken, validateChangePassword, this.userController.changePassword.bind(this.userController));
+
 
 
     return router;
