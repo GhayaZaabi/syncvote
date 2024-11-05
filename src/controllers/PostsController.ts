@@ -81,7 +81,7 @@ export class PostsController {
 
   async addCommentToPost(request: Request, response: Response): Promise<void> {
     const errors = validationResult(request);
-
+  
     if (!errors.isEmpty()) {
       response.status(400).json({
         status: 400,
@@ -91,26 +91,36 @@ export class PostsController {
     } else {
       try {
         const { description } = request.body;
-
+        const postId = request.params.postId;
+  
+        if (!postId) {
+          response.status(400).json({
+            status: 400,
+            message: 'Post ID is required.',
+          });
+          return;
+        }
+  
         const commentData = {
           description,
-          createdBy: request.userId
+          createdBy: request.userId,
         };
-
-        const commentIResponse = await this.postsService.addCommentToPost(commentData, request.params.postId);
-
-        response.status(commentIResponse.status).send({
-          ...commentIResponse,
+  
+        const commentResponse = await this.postsService.addCommentToPost(commentData, postId);
+  
+        response.status(commentResponse.status).send({
+          ...commentResponse,
         });
       } catch (error) {
         response.status(500).json({
           status: 500,
           message: 'Internal server error',
-          data: error
+          data: error,
         });
       }
     }
   }
+  
 
   async getPostById(request: Request, response: Response): Promise<void> {
     try {
@@ -241,7 +251,7 @@ export class PostsController {
         return;
       }
   
-      console.log(`Category retrieved from query: ${category}`); 
+      console.log(`Category retrieved from query: ${category}`); // Log pour vérification
   
       const postsResponse = await this.postsService.getPostsByCategory(category);
   

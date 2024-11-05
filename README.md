@@ -32,15 +32,21 @@ Seulement le propriétaire du post ou l'admin peuvent modifier le post
 ![alt text](<updatePost forbidden.png>) 
 ![alt text](updatePost.png)
 
-# delete post
+# delete post :
 Seulement le propriétaire du post ou l'admin peuvent supprimer le post 
 ![alt text](<deletePost forbidden.png>)
 ![alt text](deletePost.png) 
 
-# get all posts by user
+# get all posts by user :
 Récupérer tous les posts crées par un utilisateur précis
 ![alt text](getAllPostsByUser.png)
 
-# get posts by category
+# get posts by category :
 Récupérer tous les posts d'une catégorie spécifique 
 ![alt text](getPostsByCategory.png)
+
+# add comment to post :
+![alt text](addCommentToPost.png)
+
+# get comments
+![alt text](getComments.png)

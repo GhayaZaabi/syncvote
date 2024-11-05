@@ -5,6 +5,7 @@ import { firestoreTimestamp } from '../utils/firestore-helpers';
 import { Timestamp } from 'firebase/firestore';
 import { categories } from '../constants/categories';
 import { formatPostData, formatUserData } from '../utils/formatData';
+import { firestore } from 'firebase-admin';
 
 export class PostsService {
   private db: FirestoreCollections;
@@ -56,13 +57,36 @@ export class PostsService {
     };
   }
 
-  async addCommentToPost(commentData: any, postId: string): Promise<IResBody> {
-    // logic to add comment
-    return {
-      status: 200,
-      message: 'Comment added successfully!',
-      data: categories
-    };
+  async addCommentToPost(commentData: any, postId: string): Promise<any> {
+    try {
+      
+      const postRef = this.db.posts.doc(postId);
+      const postDoc = await postRef.get();
+
+      if (!postDoc.exists) {
+        return {
+          status: 404,
+          message: 'Post not found',
+        };
+      }
+
+      const commentRef = await postRef.collection('comments').add({
+        ...commentData,
+        createdAt: firestore.Timestamp.now(),
+      });
+
+      return {
+        status: 201,
+        message: 'Comment added successfully',
+        data: { id: commentRef.id, ...commentData },
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Failed to add comment',
+        data: error,
+      };
+    }
   }
 
   async getPostById(postId: string): Promise<IResBody> {
