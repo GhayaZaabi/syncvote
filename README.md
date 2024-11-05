@@ -40,3 +40,7 @@ Seulement le propriétaire du post ou l'admin peuvent supprimer le post
 # get all posts by user
 Récupérer tous les posts crées par un utilisateur précis
 ![alt text](getAllPostsByUser.png)
+
+# get posts by category
+Récupérer tous les posts d'une catégorie spécifique 
+![alt text](getPostsByCategory.png)

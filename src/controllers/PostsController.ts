@@ -228,4 +228,34 @@ export class PostsController {
       });
     }
   }
+
+  async getPostsByCategory(request: Request, response: Response): Promise<void> {
+    try {
+      const category = request.query.category as string;
+  
+      if (!category) {
+        response.status(400).json({
+          status: 400,
+          message: 'Category is required.',
+        });
+        return;
+      }
+  
+      console.log(`Category retrieved from query: ${category}`); 
+  
+      const postsResponse = await this.postsService.getPostsByCategory(category);
+  
+      response.status(postsResponse.status).send({
+        ...postsResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+  
+  
 }

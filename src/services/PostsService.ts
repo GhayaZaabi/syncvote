@@ -183,4 +183,34 @@ export class PostsService {
     };
   }
   
+  async getPostsByCategory(category: string): Promise<IResBody> {
+    console.log(`category: ${category}`);
+    
+    const postsQuerySnapshot = await this.db.posts.where('categories', 'array-contains', category).get();
+
+    if (postsQuerySnapshot.empty) {
+      return {
+        status: 404,
+        message: 'No posts found for this category',
+      };
+    }
+
+    const posts: Post[] = [];
+
+    for (const doc of postsQuerySnapshot.docs) {
+      const formattedPost = formatPostData(doc.data());
+
+      posts.push({
+        id: doc.id,
+        ...formattedPost,
+      });
+    }
+
+    return {
+      status: 200,
+      message: 'Posts retrieved successfully!',
+      data: posts,
+    };
+  }
+
 }
