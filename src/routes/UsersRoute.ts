@@ -26,6 +26,8 @@ export class UsersRoute {
     // router.put('/users/me',authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController)); // cette route ne fonctionne pas
     router.put('/connecteduser', authJwt.verifyToken, this.userController.updateConnectedUser.bind(this.userController));
 
+    router.delete('/users/:id' ,authJwt.verifyToken, authorize('admin'), this.userController.deleteUser.bind(this.userController) );
+
 
     return router;
   }

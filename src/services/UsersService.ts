@@ -50,7 +50,7 @@ export class UsersService {
 
     if (cachedUsers) {
       users = JSON.parse(cachedUsers);
-      console.log('Users retrieved from cache:', users);
+      console.log('Users retrieved from cache : ', users);
     } else {
       const usersQuerySnapshot = await this.db.users.get();
 
@@ -67,7 +67,7 @@ export class UsersService {
         EX: 3600
       });
 
-      console.log('Users retrieved from database:', users);
+      console.log('Users retrieved from database : ', users);
     }
 
     return {
@@ -84,45 +84,53 @@ export class UsersService {
 
     if (usersQuerySnapshot.empty) {
       return {
-        status: 401,
-        message: 'Unauthorized',
-      }
-    } else {
-      const isPasswordValid = comparePasswords(
-        password,
-        usersQuerySnapshot.docs[0].data().password as string,
-      );
-
-      if (isPasswordValid) {
-        const formattedUser = formatUserData(usersQuerySnapshot.docs[0].data());
-
-        return {
-          status: 200,
-          message: 'User logged in successfully !',
-          data: {
-            user: {
-              ...formattedUser
-            },
-            token: generateToken(usersQuerySnapshot.docs[0].id, formattedUser.role)
-          }
-        };
-      } else {
-        return {
-          status: 401,
-          message: 'Unauthorized !',
-        }
-      }
+        status: 404,
+        message: 'User does not exist',
+      };
     }
-  }
 
-  async getUserById(userId: string): Promise<IResBody> {
+    const userDoc = usersQuerySnapshot.docs[0];
+    const isPasswordValid = comparePasswords(
+      password,
+      userDoc.data().password as string,
+    );
 
-    const userDoc = await this.db.users.doc(userId).get();
+    if (!isPasswordValid) {
+      return {
+        status: 401,
+        message: 'Password incorrect',
+      };
+    }
+
     const formattedUser = formatUserData(userDoc.data());
 
     return {
       status: 200,
-      message: 'User retrieved successfully !',
+      message: 'User logged in successfully !',
+      data: {
+        user: {
+          ...formattedUser
+        },
+        token: generateToken(userDoc.id, formattedUser.role)
+      }
+    };
+  }
+
+  async getUserById(userId: string): Promise<IResBody> {
+    const userDoc = await this.db.users.doc(userId).get();
+
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+
+    const formattedUser = formatUserData(userDoc.data());
+
+    return {
+      status: 200,
+      message: 'User retrieved successfully!',
       data: {
         id: userId,
         ...formattedUser
@@ -183,4 +191,24 @@ export class UsersService {
       },
     };
   }
+
+  async deleteUser(userId: string): Promise<IResBody> {
+    const userRef = this.db.users.doc(userId);
+    const userDoc = await userRef.get();
+
+    if (!userDoc.exists) {
+      return {
+        status: 404,
+        message: 'User not found',
+      };
+    }
+
+    await userRef.delete();
+
+    return {
+      status: 200,
+      message: 'User deleted successfully!',
+    };
+  }
+
 }

@@ -196,4 +196,34 @@ export class UserController {
     }
   }
 
+  async deleteUser(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+
+    try {
+      const userId = request.params.id;
+
+      const userDoc = await this.usersService.getUserById(userId);
+      if (userDoc.status !== 200) {
+        response.status(404).json({
+          status: 404,
+          message: 'User not found',
+        });
+        return;
+      }
+
+      const updateResponse = await this.usersService.deleteUser(userId); 
+
+      response.status(updateResponse.status).send({
+        ...updateResponse,
+        userId
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
 }

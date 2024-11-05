@@ -6,12 +6,11 @@ interface DecodeToken extends JwtPayload {
 }
 const authorize = (requiredRole: string) => {
   return (req: Request, res: Response, next: NextFunction) => {
-    const userRole = 'admin';
+    const userRole = req.userRole;
     if (userRole !== requiredRole) {
-        console.log('User role from request:', req.userRole);
       return res.status(403).json({
         status: 403,
-        message: 'Forbidden ! You have to be admin to perform',
+        message: 'Forbidden! You have to be admin to perform',
       });
     }
     next();
