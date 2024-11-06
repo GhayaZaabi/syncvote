@@ -6,6 +6,7 @@ export interface Post {
   description?: string;
   voteCount?: number;
   categories?: string[];
+  usersVote?: string[];
   createdBy?: string;
   createdAt?: Timestamp | Date;
   updatedAt?: Timestamp | Date;

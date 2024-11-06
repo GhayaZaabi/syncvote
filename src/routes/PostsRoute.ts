@@ -29,6 +29,8 @@ export class PostsRoute {
 
     router.get('/posts', this.postsController.getPostsByCategory.bind(this.postsController));
 
+    router.post('/posts/:id/vote',authJwt.verifyToken , this.postsController.updownvote.bind(this.postsController));
+
     return router;
   }
 }

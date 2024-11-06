@@ -68,3 +68,11 @@ Seulement le propriétaire du commentaire ou l'admin peuvent modifier le comment
  Seulement le propriétaire du commentaire ou l'admin peuvent supprimer le commentaire
  ![alt text](<deleteComment forbidden.png>)
  ![alt text](deleteComment.png) 
+
+ # upvote downvote post :
+ La méthode permet d'ajouter un upvote ou un downvote à un post. Un utilisateur ne peut pas upvoter ou downvoter plus qu'une fois
+ ![alt text](<updownvote post.png>)
+
+ # upvote downvote comment :
+ La méthode permet d'ajouter un upvote ou un downvote à un commentaire. Un utilisateur ne peut pas upvoter ou downvoter plus qu'une fois
+ ![alt text](updownvoteComment.png)

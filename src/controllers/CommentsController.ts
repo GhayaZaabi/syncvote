@@ -163,4 +163,20 @@ export class CommentsController {
     }
   }
 
+  async updownvote(request: Request, response: Response): Promise<void> {
+    const commentsId = request.params.id;
+    const userId = request.userId;
+    try {
+      const voteResponse = await this.commentsService.updownvoteComment(commentsId, userId as string);
+
+      response.status(voteResponse.status).send(voteResponse);
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
 }

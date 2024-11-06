@@ -167,4 +167,53 @@ export class CommentsService {
         }
       }
 
+      async updownvoteComment(commentsId: string, userId: string): Promise<IResBody> {
+        const commentRef = this.db.comments.doc(commentsId);
+        const commentDoc = await commentRef.get();
+    
+        if (!commentDoc.exists) {
+          return {
+            status: 404,
+            message: 'comment not found!',
+            data: null,
+          };
+        }
+    
+        const commentData = commentDoc.data() as Post;
+    
+        if (!commentData.usersVote) commentData.usersVote = [];
+        if (commentData.voteCount === undefined) commentData.voteCount = 0;
+    
+        const userHasVoted = commentData.usersVote.includes(userId);
+    
+        if (userHasVoted) {
+          commentData.usersVote = commentData.usersVote.filter(id => id !== userId);
+          commentData.voteCount -= 1; 
+        } else {
+          commentData.usersVote.push(userId);
+          commentData.voteCount += 1;
+        }
+    
+        await commentRef.update({
+          usersVote: commentData.usersVote,
+          voteCount: commentData.voteCount,
+          updatedAt: firestoreTimestamp.now(),
+        });
+    
+        return {
+          status: 200,
+          message: 'Vote processed successfully!',
+          data: {
+            id: commentsId,
+            title: commentData.title,
+            description: commentData.description,
+            categories: commentData.categories,
+            createdBy: commentData.createdBy,
+            createdAt: commentData.createdAt instanceof Timestamp ? commentData.createdAt.toDate() : commentData.createdAt,
+            updatedAt: firestoreTimestamp.now(),
+            voteCount: commentData.voteCount,
+            usersVote: commentData.usersVote,
+          },
+        };
+      }
 }
