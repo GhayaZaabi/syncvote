@@ -244,5 +244,56 @@ export class PostsController {
     }
   }
 
+  async searchComment(request: Request, response: Response): Promise<void> {
+    try {
+      const keyword = request.query.keyword as string;
+
+      if (!keyword) {
+        response.status(400).json({
+          status: 400,
+          message: 'Keyword is required.',
+        });
+        return;
+      }
+
+      const commentResponse = await this.postsService.searchComment(keyword);
+
+      response.status(commentResponse.status).send({
+        ...commentResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
+  async searchPost(request: Request, response: Response): Promise<void> {
+    try {
+      const keyword = request.query.keyword as string;
+
+      if (!keyword) {
+        response.status(400).json({
+          status: 400,
+          message: 'Keyword is required.',
+        });
+        return;
+      }
+
+      const postResponse = await this.postsService.searchPost(keyword);
+
+      response.status(postResponse.status).send({
+        ...postResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
 
 }

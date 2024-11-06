@@ -255,4 +255,71 @@ export class PostsService {
     };
   }
 
+  async searchComment(keyword: string): Promise<IResBody> {
+    try {
+      const comments: any[] = [];
+      const postsQuerySnapshot = await this.db.posts.get();
+
+      for (const doc of postsQuerySnapshot.docs) {
+        const commentsQuerySnapshot = await doc.ref.collection('comments').get();
+
+        for (const commentDoc of commentsQuerySnapshot.docs) {
+          const commentData = commentDoc.data();
+
+          if (commentData.description.includes(keyword)) {
+            comments.push({
+              id: commentDoc.id,
+              ...commentData,
+              createdAt: (commentData.createdAt as Timestamp)?.toDate(),
+            });
+          }
+        }
+      }
+
+      return {
+        status: 200,
+        message: 'Comments retrieved successfully!',
+        data: comments,
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Failed to retrieve comments',
+        data: error,
+      };
+    }
+  }
+
+  async searchPost(keyword: string): Promise<IResBody> {
+    try {
+      const posts: Post[] = [];
+      const postsQuerySnapshot = await this.db.posts.get();
+
+      for (const doc of postsQuerySnapshot.docs) {
+        const postData = doc.data();
+
+        if (postData.title?.includes(keyword) || postData.description?.includes(keyword)) {
+          posts.push({
+            id: doc.id,
+            ...postData,
+            createdAt: (postData.createdAt as Timestamp)?.toDate(),
+            updatedAt: (postData.updatedAt as Timestamp)?.toDate(),
+          });
+        }
+      }
+
+      return {
+        status: 200,
+        message: 'Posts retrieved successfully!',
+        data: posts,
+      };
+    } catch (error) {
+      return {
+        status: 500,
+        message: 'Failed to retrieve posts',
+        data: error,
+      };
+    }
+  }
+
 }

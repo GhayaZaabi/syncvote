@@ -80,3 +80,11 @@ Seulement le propriétaire du commentaire ou l'admin peuvent modifier le comment
  # get top comments :
  Trier les commentaires par nombre de votes pour afficher les commentaires les plus populaires ou pertinents en haut
  ![alt text](getTopComments.png)
+
+ # search posts :
+ La méthode permet d'afficher tous les posts qui contiennent le keyword spécifié
+ ![alt text](searchPost.png)
+
+ # search comments :
+ La méthode permet d'afficher tous les commentaires qui contiennent le keyword spécifié
+ ![alt text](searchComment.png)

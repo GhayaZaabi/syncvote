@@ -31,6 +31,10 @@ export class PostsRoute {
 
     router.post('/posts/:id/vote',authJwt.verifyToken , this.postsController.updownvote.bind(this.postsController));
 
+    router.get('/search/comments', this.postsController.searchComment.bind(this.postsController));
+
+    router.get('/search/posts', this.postsController.searchPost.bind(this.postsController));
+
     return router;
   }
 }
