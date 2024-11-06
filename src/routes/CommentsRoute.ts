@@ -29,6 +29,8 @@ export class CommentsRoute {
 
         router.post('/comments/:id/vote',authJwt.verifyToken, this.commentsController.updownvote.bind(this.commentsController));
 
+        router.get('/posts/:postId/comments/top', this.commentsController.getTopComments.bind(this.commentsController));
+
         return router;
 
     }

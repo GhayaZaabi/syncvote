@@ -216,4 +216,34 @@ export class CommentsService {
           },
         };
       }
+
+      async getTopComments(postId: string): Promise<IResBody> {
+        const comments: Comment[] = [];
+        const commentsSnapshot = await this.db.comments.where('postId', '==', postId).get();
+    
+        if (commentsSnapshot.empty) {
+            return {
+                status: 404,
+                message: 'No comments found for this post.',
+                data: [],
+            };
+        }
+    
+        commentsSnapshot.forEach(doc => {
+            comments.push({
+                id: doc.id,
+                ...doc.data(),
+                createdAt: (doc.data()?.createdAt as Timestamp)?.toDate(),
+                updatedAt: (doc.data()?.updatedAt as Timestamp)?.toDate(),
+            });
+        });
+    
+        comments.sort((a, b) => (b.voteCount ?? 0) - (a.voteCount ?? 0));
+    
+        return {
+            status: 200,
+            message: 'Comments sorted by vote count successfully !',
+            data: comments,
+        };
+    }
 }

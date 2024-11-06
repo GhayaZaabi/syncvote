@@ -76,3 +76,7 @@ Seulement le propriétaire du commentaire ou l'admin peuvent modifier le comment
  # upvote downvote comment :
  La méthode permet d'ajouter un upvote ou un downvote à un commentaire. Un utilisateur ne peut pas upvoter ou downvoter plus qu'une fois
  ![alt text](updownvoteComment.png)
+
+ # get top comments :
+ Trier les commentaires par nombre de votes pour afficher les commentaires les plus populaires ou pertinents en haut
+ ![alt text](getTopComments.png)

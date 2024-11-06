@@ -179,4 +179,21 @@ export class CommentsController {
     }
   }
 
+  async getTopComments(request: Request, response: Response): Promise<void> {
+    const { postId } = request.params;
+    try {
+        const commentsResponse = await this.commentsService.getTopComments(postId);
+
+        response.status(commentsResponse.status).send({
+            ...commentsResponse,
+        });
+    } catch (error) {
+        response.status(500).json({
+            status: 500,
+            message: 'Internal server error',
+            data: error,
+        });
+    }
+} 
+
 }
