@@ -58,3 +58,13 @@ Récupérer tous les commentaires d'un post spécifique
 # get comment by id :
 Récupérer un commentaire par son id
 ![alt text](getCommentById.png)
+
+# update comment :
+Seulement le propriétaire du commentaire ou l'admin peuvent modifier le commentaire
+ ![alt text](<updateComment forbidden.png>)
+ ![alt text](updateComment.png)
+
+ # delete comment :
+ Seulement le propriétaire du commentaire ou l'admin peuvent supprimer le commentaire
+ ![alt text](<deleteComment forbidden.png>)
+ ![alt text](deleteComment.png) 

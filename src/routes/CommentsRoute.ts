@@ -15,14 +15,18 @@ export class CommentsRoute {
     createRouter(): Router {
         const router = Router();
 
-        router.post('/posts/:postId/comments',authJwt.verifyToken , this.commentsController.addCommentToPost.bind(this.commentsController));
+        router.post('/posts/:postId/comments', authJwt.verifyToken, this.commentsController.addCommentToPost.bind(this.commentsController));
 
         router.get('/comments', this.commentsController.getComments.bind(this.commentsController))
 
         router.get('/posts/:postId/comments', this.commentsController.getallCommentsPost.bind(this.commentsController));
 
         router.get('/comments/:id', this.commentsController.getCommentById.bind(this.commentsController));
-        
+
+        router.put('/comments/:id', authJwt.verifyToken, this.commentsController.updateComment.bind(this.commentsController));
+
+        router.delete('/comments/:id', authJwt.verifyToken, this.commentsController.deleteComment.bind(this.commentsController));
+
         return router;
 
     }

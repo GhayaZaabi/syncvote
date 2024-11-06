@@ -95,4 +95,72 @@ export class CommentsController {
     }
   }
 
+  async updateComment(request: Request, response: Response): Promise<void> {
+    const errors = validationResult(request);
+
+    if (!errors.isEmpty()) {
+      response.status(400).json({
+        status: 400,
+        message: 'Bad request. Validation errors.',
+        data: errors.array(),
+      });
+      return;
+    }
+
+    try {
+      const commentId = request.params.id;
+      const updateData = request.body;
+      const userId = request.userId as string;
+      const userRole = request.userRole as string;
+
+      if (!userId || !userRole) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID and role are required.',
+        });
+        return;
+      }
+
+      const commentResponse = await this.commentsService.updateComment(commentId, updateData, userId, userRole);
+
+      response.status(commentResponse.status).send({
+        ...commentResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
+  async deleteComment(request: Request, response: Response): Promise<void> {
+    try {
+      const commentId = request.params.id;
+      const userId = request.userId as string;
+      const userRole = request.userRole as string;
+
+      if (!userId || !userRole) {
+        response.status(400).json({
+          status: 400,
+          message: 'User ID and role are required.',
+        });
+        return;
+      }
+
+      const commentResponse = await this.commentsService.deleteComment(commentId, userId, userRole);
+
+      response.status(commentResponse.status).send({
+        ...commentResponse,
+      });
+    } catch (error) {
+      response.status(500).json({
+        status: 500,
+        message: 'Internal server error',
+        data: error,
+      });
+    }
+  }
+
 }

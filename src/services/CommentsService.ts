@@ -103,4 +103,68 @@ export class CommentsService {
         };
     }
 
+    async updateComment(commentId: string, updateData: Partial<Post>, userId: string, userRole: string): Promise<IResBody> {
+        const commentRef = this.db.comments.doc(commentId);
+        const commentDoc = await commentRef.get();
+    
+        if (!commentDoc.exists) {
+          return {
+            status: 404,
+            message: 'Post not found',
+          };
+        }
+    
+        const commentData = commentDoc.data();
+    
+        if (commentData?.createdBy !== userId && userRole !== 'admin') {
+          return {
+            status: 403,
+            message: 'Forbidden! You do not have permission to update this post.',
+          };
+        }
+    
+        await commentRef.update({
+          ...updateData,
+          updatedAt: firestoreTimestamp.now(),
+        });
+    
+        return {
+          status: 200,
+          message: 'Post updated successfully!',
+          data: {
+            id: commentId,
+            ...updateData,
+          },
+        };
+      }
+    
+      async deleteComment(commentId: string, userId: string, userRole: string): Promise<IResBody> {
+        const commentRef = this.db.comments.doc(commentId);
+        const commentDoc = await commentRef.get();
+    
+        if (!commentDoc.exists) {
+          return {
+            status: 404,
+            message: 'Post not found',
+          };
+        }
+    
+        const commentData = commentDoc.data();
+    
+        if (commentData?.createdBy !== userId && userRole !== 'admin') {
+          return {
+            status: 403,
+            message: 'Forbidden! You do not have permission to delete this post.',
+          };
+        } else {
+    
+          await commentRef.delete();
+    
+          return {
+            status: 200,
+            message: 'Post deleted successfully!',
+          };
+        }
+      }
+
 }
