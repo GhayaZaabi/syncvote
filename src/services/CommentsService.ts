@@ -14,6 +14,21 @@ export class CommentsService {
         this.db = db;
     }
 
+    async addCommentToPost(commentData: any): Promise<IResBody> {
+        const commentRef = this.db.comments.doc();
+        await commentRef.set({
+            ...commentData,
+            voteCount: 0,
+            createdAt: firestoreTimestamp.now(),
+            updatedAt: firestoreTimestamp.now(),
+        });
+
+        return {
+            status: 201,
+            message: 'Comment added successfully!',
+        };
+    }
+
     async getComments(): Promise<IResBody> {
         const comments: Comment[] = [];
         const postsQuerySnapshot = await this.db.comments.get();
@@ -31,6 +46,60 @@ export class CommentsService {
             status: 200,
             message: 'Comments retrieved successfully!',
             data: comments
+        };
+    }
+
+
+    async getAllCommentsPost(postId: string): Promise<any> {
+        const Comments: Comment[] = [];
+        const postsQuerySnapshot = await this.db.comments.where('postId', '==', postId).get();
+
+        if (postsQuerySnapshot.empty) {
+            return {
+                status: 404,
+                message: 'No comments found for this post.',
+                data: [],
+            };
+        }
+
+        for (const doc of postsQuerySnapshot.docs) {
+            Comments.push({
+                id: doc.id,
+                ...doc.data(),
+                createdAt: (doc.data()?.createdAt as Timestamp)?.toDate(),
+                updatedAt: (doc.data()?.updatedAt as Timestamp)?.toDate(),
+            });
+        }
+
+        return {
+            status: 200,
+            message: 'Comments retrieved successfully!',
+            data: Comments
+        };
+    }
+
+    async getCommentById(commentId: string): Promise<IResBody> {
+        const commentDoc = await this.db.comments.doc(commentId).get();
+
+        if (!commentDoc.exists) {
+            return {
+                status: 404,
+                message: 'Post not found!',
+                data: null,
+            };
+        }
+
+        const commentData = {
+            id: commentDoc.id,
+            ...commentDoc.data(),
+            createdAt: (commentDoc.data()?.createdAt as Timestamp)?.toDate(),
+            updatedAt: (commentDoc.data()?.updatedAt as Timestamp)?.toDate(),
+        };
+
+        return {
+            status: 200,
+            message: 'Comment retrieved successfully!',
+            data: commentData
         };
     }
 

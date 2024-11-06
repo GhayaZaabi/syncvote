@@ -43,10 +43,18 @@ Récupérer tous les posts crées par un utilisateur précis
 
 # get posts by category :
 Récupérer tous les posts d'une catégorie spécifique 
-![alt text](getPostsByCategory.png)
+![alt text](getPostsByCategory-1.png)
 
 # add comment to post :
 ![alt text](addCommentToPost.png)
 
 # get comments
 ![alt text](getComments.png)
+
+# get all comments of a post :
+Récupérer tous les commentaires d'un post spécifique 
+![alt text](getallCommentsPost.png)
+
+# get comment by id :
+Récupérer un commentaire par son id
+![alt text](getCommentById.png)

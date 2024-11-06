@@ -79,49 +79,6 @@ export class PostsController {
     }
   }
 
-  async addCommentToPost(request: Request, response: Response): Promise<void> {
-    const errors = validationResult(request);
-  
-    if (!errors.isEmpty()) {
-      response.status(400).json({
-        status: 400,
-        message: 'Bad request.',
-        data: errors.array(),
-      });
-    } else {
-      try {
-        const { description } = request.body;
-        const postId = request.params.postId;
-  
-        if (!postId) {
-          response.status(400).json({
-            status: 400,
-            message: 'Post ID is required.',
-          });
-          return;
-        }
-  
-        const commentData = {
-          description,
-          createdBy: request.userId,
-        };
-  
-        const commentResponse = await this.postsService.addCommentToPost(commentData, postId);
-  
-        response.status(commentResponse.status).send({
-          ...commentResponse,
-        });
-      } catch (error) {
-        response.status(500).json({
-          status: 500,
-          message: 'Internal server error',
-          data: error,
-        });
-      }
-    }
-  }
-  
-
   async getPostById(request: Request, response: Response): Promise<void> {
     try {
       if (request.params.id) {
@@ -160,8 +117,8 @@ export class PostsController {
     try {
       const postId = request.params.id;
       const updateData = request.body;
-      const userId = request.userId as string; 
-      const userRole = request.userRole as string; 
+      const userId = request.userId as string;
+      const userRole = request.userRole as string;
 
       if (!userId || !userRole) {
         response.status(400).json({
@@ -188,8 +145,8 @@ export class PostsController {
   async deletePost(request: Request, response: Response): Promise<void> {
     try {
       const postId = request.params.id;
-      const userId = request.userId as string; 
-      const userRole = request.userRole as string; 
+      const userId = request.userId as string;
+      const userRole = request.userRole as string;
 
       if (!userId || !userRole) {
         response.status(400).json({
@@ -242,7 +199,7 @@ export class PostsController {
   async getPostsByCategory(request: Request, response: Response): Promise<void> {
     try {
       const category = request.query.category as string;
-  
+
       if (!category) {
         response.status(400).json({
           status: 400,
@@ -250,11 +207,11 @@ export class PostsController {
         });
         return;
       }
-  
+
       console.log(`Category retrieved from query: ${category}`); // Log pour vérification
-  
+
       const postsResponse = await this.postsService.getPostsByCategory(category);
-  
+
       response.status(postsResponse.status).send({
         ...postsResponse,
       });
@@ -266,6 +223,6 @@ export class PostsController {
       });
     }
   }
-  
-  
+
+
 }

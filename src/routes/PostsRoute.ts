@@ -16,7 +16,6 @@ export class PostsRoute {
 
     router.post('/posts', authJwt.verifyToken, validateCreatePost, this.postsController.createPost.bind(this.postsController));
     router.get('/allposts', this.postsController.getPosts.bind(this.postsController));
-    router.post('/posts/:postId/comments', authJwt.verifyToken, this.postsController.addCommentToPost.bind(this.postsController));
 
     router.get('/categories', this.postsController.getCategories.bind(this.postsController));
 
